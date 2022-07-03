@@ -1,0 +1,2 @@
+This branch simply displays an informational page from an EMR.  
+
