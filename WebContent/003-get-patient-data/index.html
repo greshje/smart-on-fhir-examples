@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+	<head>
+		<title>SMART on FHIR Example Application (index.html)</title>
+	</head>
+
+	<body>
+		<h1>Congratulations, you have successfully authenticated to the EMR!</h1>
+		<p>
+			If you are looking at this page in a browser, you did not authenticate, you are just looking at a static web page.  
+		</p>
+		<p>
+			If you launched launch.html in and EMR and you are now looking at this page, 
+			congratulations, You have successfully performed a SMART on FHIR authentication!
+		</p>
+		
+		<!-- javascript for this application -->
+		<!--  
+		<script src='./static/js/example-smart-app.js'></script>
+		-->
+	
+		<!-- javascript libraries -->
+		<script src='/smart-on-fhir-examples/static/js/fhir-client-v0.1.12.js'></script>
+		<script src='/smart-on-fhir-examples/static/js/fhir-client-cerner-additions-1.0.0.js'></script>
+		<script src="/smart-on-fhir-examples/static/jquery-1.12.4/jquery.min.js"></script>
+
+		<script>
+			fhirOnReady = function(smart) {
+				alert("SMART: \n" + JSON.stringify(smart,undefined, 2));
+		        patient = smart.patient;
+		        alert("PATIENT (before): \n" + JSON.stringify(patient,undefined, 2));
+		       	pt = patient.read();
+		       	alert("PT: \n" + JSON.stringify(pt,undefined, 2));
+		       	
+				alert("FETCHING ALL...");
+				alert(smart);
+		        var obv = smart.patient.api.fetchAll({
+	                type: 'Observation',
+	                query: {
+	                  code: {
+	                    $or: [
+	                      'http://loinc.org|8302-2', 
+	                      'http://loinc.org|8462-4',
+	                      'http://loinc.org|8480-6', 
+	                      'http://loinc.org|2085-9',
+	                      'http://loinc.org|2089-1', 
+	                      'http://loinc.org|55284-4'
+	                    ]
+	                  }
+	                }
+	              });
+
+		        alert("Done fetching all.");
+		        
+			    $.when(pt, obv).fail(fhirOnError);
+			
+			    $.when(pt, obv).done(
+			        function(patient, obv) {
+			        	alert("PATIENT (after): \n" + JSON.stringify(patient,undefined, 2));    	
+			    	}
+			    );
+
+			};
+			fhirOnError = function() {
+				alert("An error occured");
+			};
+			
+			alert("Getting data...");
+		    FHIR.oauth2.ready(fhirOnReady, fhirOnError);
+			alert("Done getting data.");
+
+		</script>
+
+		<!-- script to do the fhir request for data and then display the data -->		
+		<!--  
+		<script>
+			alert("CALLING EXTRACT DATA")
+			extractData().then (
+			// Display Patient Demographics and Observations if extractData was success
+			function (p) {
+				alert("P (JSON): \n" + JSON.stringify(p, undefined, 2));
+				drawVisualization(p);
+			},
+			// Display 'Failed to call FHIR Service' if extractData failed
+			function () {
+				alert("AN ERROR OCCURED");
+				$('#loading').hide();
+				$('#errors').html('<p> Failed to call FHIR Service </p>');
+			});
+		</script>
+		-->
+
+		<script>alert("DONE: loading index.html")</script>
+
+	</body>
+
+</html>
