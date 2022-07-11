@@ -27,11 +27,32 @@
 		</p>
 
 		<div id="patientSuccessMsg"></div>
-
+		<br/>
+		
 		<h3>Raw Data</h3>
 		<p>
 			<textarea class="scrollable" id="patientJson"></textarea>
 		</p>
+		<br/>
+		<h3>Patient</h3>
+		<table border="2">
+			<tr>
+				<td>First&nbsp;Name:&nbsp;</td>
+				<td id="fname">Not Available</td>
+			</tr>
+			<tr>
+				<td>Last&nbsp;Name:&nbsp;</td>
+				<td id="lname">Not Available</td>
+			</tr>
+			<tr>
+				<td>Gender:&nbsp;</td>
+				<td id="gender">Not Available</td>
+			</tr>
+			<tr>
+				<td>Date&nbsp;Of&nbsp;Birth:&nbsp;</td>
+				<td id="dob">Not Available</td>
+			</tr>
+		</table>
 		
 		<script>
 			fhirOnReady = function(smart) {
@@ -60,11 +81,24 @@
 
 		        alert("Done fetching all.");
 		        
+		        var populatePatientData = function(patient) {
+		        	alert("Populating patient data...");
+		        	$("#fname").html(patient.name[0].given);
+		        	$("#lname").html(patient.name[0].family);
+		        	$("#gender").html(patient.gender);
+		        	$("#dob").html(patient.birthDate);
+		        	alert("Done populating patient data");
+		        }
+		        
 			    $.when(pt, obv).fail(fhirOnError);
 			
 			    $.when(pt, obv).done(
 			        function(patient, obv) {
 			        	alert("PATIENT (after): \n" + JSON.stringify(patient,undefined,2));   
+			        	alert(patient.name[0]);
+			        	alert(patient.name[0].given);
+			        	alert(patient.name[0].family);
+			        	populatePatientData(patient);
 			        	$("#patientJson").html(JSON.stringify(patient,undefined,2));
 			        	$("#patientSuccessMsg").html("<h1>Congratulations, you've also successfully loaded a patient using SMART on FHIR</h1>");
 			    	}
