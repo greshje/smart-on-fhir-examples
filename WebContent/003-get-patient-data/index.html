@@ -3,7 +3,17 @@
 <html lang="en">
 
 	<head>
+		<!-- title -->
 		<title>SMART on FHIR Example Application (index.html)</title>
+
+		<!-- css -->
+		<link rel='stylesheet' type='text/css' href='/smart-on-fhir-examples/static/css/smart-on-fhir-examples.css'>
+
+		<!-- javascript libraries -->
+		<script src='/smart-on-fhir-examples/static/js/fhir-client-v0.1.12.js'></script>
+		<script src='/smart-on-fhir-examples/static/js/fhir-client-cerner-additions-1.0.0.js'></script>
+		<script src="/smart-on-fhir-examples/static/jquery-1.12.4/jquery.min.js"></script>
+
 	</head>
 
 	<body>
@@ -15,27 +25,23 @@
 			If you launched launch.html in and EMR and you are now looking at this page, 
 			congratulations, You have successfully performed a SMART on FHIR authentication!
 		</p>
-		
-		<!-- javascript for this application -->
-		<!--  
-		<script src='./static/js/example-smart-app.js'></script>
-		-->
-	
-		<!-- javascript libraries -->
-		<script src='/smart-on-fhir-examples/static/js/fhir-client-v0.1.12.js'></script>
-		<script src='/smart-on-fhir-examples/static/js/fhir-client-cerner-additions-1.0.0.js'></script>
-		<script src="/smart-on-fhir-examples/static/jquery-1.12.4/jquery.min.js"></script>
 
+		<div id="patientSuccessMsg"></div>
+
+		<h3>Raw Data</h3>
+		<p>
+			<textarea class="scrollable" id="patientJson"></textarea>
+		</p>
+		
 		<script>
 			fhirOnReady = function(smart) {
-				alert("SMART: \n" + JSON.stringify(smart,undefined, 2));
+				alert("SMART (this is the variable added to the page by the SMART on FHIR call): \n" + JSON.stringify(smart,undefined, 2));
 		        patient = smart.patient;
 		        alert("PATIENT (before): \n" + JSON.stringify(patient,undefined, 2));
 		       	pt = patient.read();
-		       	alert("PT: \n" + JSON.stringify(pt,undefined, 2));
+		       	alert("PT (this is the variable returned by patient.read()): \n" + JSON.stringify(pt,undefined, 2));
 		       	
 				alert("FETCHING ALL...");
-				alert(smart);
 		        var obv = smart.patient.api.fetchAll({
 	                type: 'Observation',
 	                query: {
@@ -58,41 +64,24 @@
 			
 			    $.when(pt, obv).done(
 			        function(patient, obv) {
-			        	alert("PATIENT (after): \n" + JSON.stringify(patient,undefined, 2));    	
+			        	alert("PATIENT (after): \n" + JSON.stringify(patient,undefined,2));   
+			        	$("#patientJson").html(JSON.stringify(patient,undefined,2));
+			        	$("#patientSuccessMsg").html("<h1>Congratulations, you've also successfully loaded a patient using SMART on FHIR</h1>");
 			    	}
 			    );
 
 			};
 			fhirOnError = function() {
-				alert("An error occured");
+	        	$("#patientJson").html("An error occurred.\nThis is expected if you are looking at this page from a browser.");
 			};
 			
 			alert("Getting data...");
 		    FHIR.oauth2.ready(fhirOnReady, fhirOnError);
-			alert("Done getting data.");
+			alert("Done with call to get data (it still needs to actually run).");
 
 		</script>
 
-		<!-- script to do the fhir request for data and then display the data -->		
-		<!--  
-		<script>
-			alert("CALLING EXTRACT DATA")
-			extractData().then (
-			// Display Patient Demographics and Observations if extractData was success
-			function (p) {
-				alert("P (JSON): \n" + JSON.stringify(p, undefined, 2));
-				drawVisualization(p);
-			},
-			// Display 'Failed to call FHIR Service' if extractData failed
-			function () {
-				alert("AN ERROR OCCURED");
-				$('#loading').hide();
-				$('#errors').html('<p> Failed to call FHIR Service </p>');
-			});
-		</script>
-		-->
-
-		<script>alert("DONE: loading index.html")</script>
+		<script>alert("DONE: loading index.html (the onReady scripts will be run now)")</script>
 
 	</body>
 

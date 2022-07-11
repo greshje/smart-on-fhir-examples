@@ -1,0 +1,5 @@
+textarea {
+    overflow-y: scroll;
+    height: 200px;
+    width: 800px;
+}
