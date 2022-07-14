@@ -32,12 +32,19 @@
 
 		<div id="patientSuccessMsg"></div>
 		<br/>
-		
-		<h3>Raw Data</h3>
+
+		<!-- text area for patient raw data -->
+		<h3>Patient Raw Data</h3>
 		<p>
 			<textarea class="scrollable" id="patientJson"></textarea>
 		</p>
 		<br/>
+
+		<!-- text area for smart object as json -->
+		<h3>Javascript object: smart</h3>
+		<p>
+			<textarea class="scrollable" id="smartJson"></textarea>
+		</p>
 		<h3>Patient</h3>
 		<table border="2">
 			<tr>
@@ -93,12 +100,15 @@
 			        	populatePatientData(patient);
 			        	$("#patientJson").html(JSON.stringify(patient,undefined,2));
 			        	$("#patientSuccessMsg").html("<h1>Congratulations, you've also successfully loaded a patient using SMART on FHIR</h1>");
+			        	$("#smartJson").html(JSON.stringify(smart,undefined,2));
 			    	}
 			    );
 
 			};
+
 			fhirOnError = function() {
 	        	$("#patientJson").html("An error occurred.\nThis is expected if you are looking at this page from a browser.");
+	        	$("#smartJson").html("An error occurred.\nThis is expected if you are looking at this page from a browser.");
 			};
 			
 		    FHIR.oauth2.ready(fhirOnReady, fhirOnError);
@@ -108,3 +118,4 @@
 	</body>
 
 </html>
+
